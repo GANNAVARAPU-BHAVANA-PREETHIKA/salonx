@@ -12,7 +12,7 @@ View your app in AI Studio: https://ai.studio/apps/8046f56d-c250-4bbd-bb32-0b7e3
 
 1. Create a Vercel project from this repo.
 2. Add an Environment Variable:
-   - `VITE_GEMINI_API_KEY` = your Gemini API key
+   - `GEMINI_API_KEY` = your Gemini API key
 3. Build settings (defaults for Vite):
    - Build command: `npm run build`
    - Output directory: `dist`
@@ -24,7 +24,7 @@ View your app in AI Studio: https://ai.studio/apps/8046f56d-c250-4bbd-bb32-0b7e3
 1. Install dependencies:
    `npm install`
 2. Create a local `.env.local` file with:
-   - `VITE_GEMINI_API_KEY=...`
+   - `GEMINI_API_KEY=...`
+   - `VITE_GEMINI_API_KEY=...` for AI Scan when using `npm run dev`
 3. Run the app:
    `npm run dev`
-

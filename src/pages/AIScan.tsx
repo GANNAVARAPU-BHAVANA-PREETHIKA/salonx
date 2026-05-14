@@ -13,6 +13,7 @@ export default function AIScan() {
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const [error, setError] = useState('');
   const [preferences, setPreferences] = useState('');
 
   const [videoElement, setVideoElement] = useState<HTMLVideoElement | null>(null);
@@ -84,15 +85,24 @@ export default function AIScan() {
   const handleAnalyze = async () => {
     if (!capturedImage) return;
     setIsAnalyzing(true);
-    const data = await analyzeFaceAndRecommend(capturedImage, preferences);
-    setResult(data);
-    setIsAnalyzing(false);
+    setError('');
+
+    try {
+      const data = await analyzeFaceAndRecommend(capturedImage, preferences);
+      setResult(data);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'AI analysis failed. Please try again.';
+      setError(message);
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const reset = () => {
     setCapturedImage(null);
     setResult(null);
     setIsAnalyzing(false);
+    setError('');
     startCamera();
   };
 
@@ -237,8 +247,13 @@ export default function AIScan() {
                 onClick={handleAnalyze}
                 className="w-full py-5 bg-primary text-background font-bold rounded-full uppercase tracking-widest text-sm shadow-[0_0_40px_rgba(212,175,55,0.4)] disabled:opacity-20 transition-all"
               >
-                Process Aesthetics
+                {isAnalyzing ? 'Processing...' : 'Process Aesthetics'}
               </button>
+              {error && (
+                <p className="text-sm text-red-300 leading-relaxed" role="alert">
+                  {error}
+                </p>
+              )}
             </motion.div>
           ) : (
             <motion.div 
