@@ -15,13 +15,34 @@ const parseBody = (body: any) => {
   return body;
 };
 
+const getErrorMessage = (error: unknown) => {
+  if (error instanceof Error && error.message) {
+    return error.message;
+  }
+
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  return 'Unknown Gemini API error.';
+};
+
 export default async function handler(req: any, res: any) {
+  const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+
+  if (req.method === 'GET') {
+    return jsonResponse(res, 200, {
+      ok: true,
+      keyConfigured: Boolean(apiKey),
+      model: 'gemini-2.0-flash',
+    });
+  }
+
   if (req.method !== 'POST') {
-    res.setHeader('Allow', 'POST');
+    res.setHeader('Allow', 'GET, POST');
     return jsonResponse(res, 405, { error: 'Method not allowed' });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
   if (!apiKey) {
     return jsonResponse(res, 500, {
       error: 'Gemini API key is not configured. Add GEMINI_API_KEY in Vercel.',
@@ -35,6 +56,12 @@ export default async function handler(req: any, res: any) {
     }
 
     const base64Data = imageData.split(',')[1] || imageData;
+    if (base64Data.length > 3_500_000) {
+      return jsonResponse(res, 413, {
+        error: 'Captured image is too large. Please retake the scan and try again.',
+      });
+    }
+
     const model = new GoogleGenerativeAI(apiKey).getGenerativeModel({
       model: 'gemini-2.0-flash',
     });
@@ -69,9 +96,10 @@ Format your response as a valid JSON object with the following structure:
 
     return jsonResponse(res, 200, JSON.parse(jsonMatch[0]));
   } catch (error) {
-    console.error('AI Face Analysis Error:', error);
+    const message = getErrorMessage(error);
+    console.error('AI Face Analysis Error:', message);
     return jsonResponse(res, 500, {
-      error: 'AI analysis failed. Please try again.',
+      error: `AI analysis failed: ${message}`,
     });
   }
 }
