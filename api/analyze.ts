@@ -1,5 +1,9 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
+export const config = {
+  maxDuration: 30,
+};
+
 const jsonResponse = (res: any, status: number, body: unknown) => {
   res.status(status).setHeader('Content-Type', 'application/json');
   res.end(JSON.stringify(body));

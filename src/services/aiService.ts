@@ -49,13 +49,22 @@ export async function analyzeFaceAndRecommend(imageData: string, preferences: st
     body: JSON.stringify({ imageData, preferences }),
   });
 
-  const data = await response.json().catch(() => null);
+  const responseText = await response.text();
+  let data = null;
+  try {
+    data = responseText ? JSON.parse(responseText) : null;
+  } catch {
+    data = null;
+  }
   if (response.status === 404 && (import.meta as any).env?.DEV) {
     return analyzeInBrowser(imageData, preferences);
   }
 
   if (!response.ok) {
-    throw new Error(data?.error || 'AI analysis failed. Please try again.');
+    throw new Error(
+      data?.error ||
+        `AI analysis request failed with status ${response.status}. Please try again.`
+    );
   }
 
   if (

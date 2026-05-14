@@ -1,8 +1,11 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { Camera, RefreshCw, Sparkles, ArrowLeft, History, CheckCircle2, Loader2, X } from 'lucide-react';
+import { Camera, RefreshCw, Sparkles, ArrowLeft, CheckCircle2, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { analyzeFaceAndRecommend } from '../services/aiService';
+
+const MAX_SCAN_IMAGE_SIZE = 768;
+const SCAN_IMAGE_QUALITY = 0.75;
 
 export default function AIScan() {
   const navigate = useNavigate();
@@ -70,12 +73,16 @@ export default function AIScan() {
     if (videoElement && canvasRef.current) {
       const video = videoElement;
       const canvas = canvasRef.current;
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+      const scale = Math.min(
+        1,
+        MAX_SCAN_IMAGE_SIZE / Math.max(video.videoWidth, video.videoHeight)
+      );
+      canvas.width = Math.round(video.videoWidth * scale);
+      canvas.height = Math.round(video.videoHeight * scale);
       const ctx = canvas.getContext('2d');
       if (ctx) {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const dataUrl = canvas.toDataURL('image/jpeg');
+        const dataUrl = canvas.toDataURL('image/jpeg', SCAN_IMAGE_QUALITY);
         setCapturedImage(dataUrl);
         stopCamera();
       }
