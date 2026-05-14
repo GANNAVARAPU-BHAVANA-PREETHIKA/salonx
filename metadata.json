@@ -1,0 +1,16 @@
+{
+  "name": "SalonX",
+  "description": "Smart grooming ecosystem with real-time queue management, premium stylist marketplace, and luxury at-home bookings.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "real-time-queues",
+    "stylist-marketplace",
+    "subscription-memberships",
+    "at-home-professional-booking",
+    "ai-powered-recommendations"
+  ]
+}

@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0A0A0A;
+  --color-surface: #121212;
+  --color-surface-bright: #1A1A1A;
+  --color-primary: #D4AF37; /* Liquid Gold */
+  --color-secondary: #C0C0C0; /* Silver */
+  --color-accent: #8A2BE2; /* Cyber-Neon Violet */
+  --color-on-surface: #E5E2E1;
+  --color-on-surface-variant: #D0C5AF;
+  
+  --font-serif: "Noto Serif", serif;
+  --font-sans: "Space Grotesk", sans-serif;
+
+  --radius-xl: 24px;
+}
+
+@layer base {
+  * {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23D4AF37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 15a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm0 0V8a2 2 0 0 1 2-2h12'%3E%3C/path%3E%3Cpath d='M18 15a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm0 0V8a2 2 0 0 0-2-2H6'%3E%3C/path%3E%3Ccircle cx='6' cy='18' r='3'%3E%3C/circle%3E%3Ccircle cx='18' cy='18' r='3'%3E%3C/circle%3E%3C/svg%3E"), auto;
+  }
+
+  body {
+    @apply bg-background text-on-surface font-sans antialiased selection:bg-primary/30 selection:text-primary;
+    background-image: 
+      radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.03) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(138, 43, 226, 0.03) 0%, transparent 40%);
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-semibold tracking-tight;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/[0.03] backdrop-blur-xl border border-white/[0.08];
+  }
+  
+  .glass-gold {
+    @apply bg-primary/[0.03] backdrop-blur-xl border border-primary/20;
+  }
+
+  .neon-glow {
+    box-shadow: 0 0 30px rgba(138, 43, 226, 0.1);
+  }
+
+  .gold-glow {
+    box-shadow: 0 0 40px rgba(212, 175, 55, 0.1);
+  }
+  
+  .text-glow {
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
