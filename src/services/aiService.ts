@@ -1,10 +1,24 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+function getApiKeyOrWarn() {
+  // Note: Vite exposes env vars on import.meta.env at build time.
+  // Some TS configs require a type augmentation, so we access via (import.meta as any).
+  const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY;
+
+  if (!apiKey) {
+    console.warn(
+      'Missing VITE_GEMINI_API_KEY. AI Scan will not work on this deployment.'
+    );
+  }
+  return apiKey || '';
+}
 
 export async function analyzeFaceAndRecommend(imageData: string, preferences: string) {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const apiKey = getApiKeyOrWarn();
+    if (!apiKey) return null;
+
+    const model = new GoogleGenerativeAI(apiKey).getGenerativeModel({ model: "gemini-2.0-flash" });
     
     // Remove metadata prefix if present (e.g. "data:image/jpeg;base64,")
     const base64Data = imageData.split(',')[1] || imageData;
